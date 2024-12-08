@@ -3,7 +3,8 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Install cron and required packages
-RUN apt-get update && apt-get install -y cron
+RUN apt-get update && apt-get install -y cron 
+# cron is important to create extensive solution.
 
 # Install Python dependencies
 COPY requirements.txt .
