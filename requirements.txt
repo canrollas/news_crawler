@@ -1,2 +1,6 @@
 Scrapy~=2.11.2
 itemadapter~=0.9.0
+pymongo
+flask
+flask-limiter
+python-dotenv

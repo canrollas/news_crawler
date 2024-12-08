@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: news_scraper
+    restart: always
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://root:example@mongodb:27017/
+      - SCRAPING_INTERVAL=3600
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: news_api
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://root:example@mongodb:27017/
+      - API_TOKEN=your_static_token_here
+
+volumes:
+  mongodb_data:

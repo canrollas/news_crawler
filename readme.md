@@ -1,42 +1,66 @@
 # Scrapy News Crawler
 
-This project is a web scraping tool built using Scrapy, designed to fetch news articles and related data from various
-prominent news websites across different languages. The data can be used for data mining, analysis, or other purposes.
+This project is a web scraping system built with Scrapy that collects news articles from major international news websites (CNN, El País, Le Monde, and Der Spiegel). The scraped data is stored in MongoDB and exposed through a REST API.
 
-## Features
+## System Architecture
 
-- Crawls news websites in multiple languages (English, Arabic, French, German, Russian, and Spanish).
-- Extracts URLs, headlines, publication dates, and content.
-- Structured output for easy analysis and processing.
-- Modular spiders for each site.
+- **Web Scrapers**: Individual Scrapy spiders for each news source that extract article data
+- **MongoDB Database**: Stores the scraped articles with deduplication
+- **REST API**: Flask-based API to query and retrieve the collected articles
+- **Automated Scheduling**: Cron jobs to regularly run the scrapers
 
-## Prerequisites
+## Key Components
 
-- Python 3.7 or higher
-- Scrapy framework
-- A working internet connection
+### Scrapy Spiders
+- Separate spider for each news source (CNN, El País, Le Monde, Der Spiegel)
+- Extracts article URLs, headlines, publication dates, and content
+- Handles different HTML structures and languages
 
-## Installation
+### MongoDB Pipeline
+- Stores scraped articles in separate collections per source
+- Prevents duplicate articles by checking URLs
+- Maintains article metadata and content
+
+### REST API Endpoints
+- `/api/news/recent` - Get most recent articles across all sources
+- Supports pagination and sorting by date
+- Authentication required via tokens
+
+### Automation
+- Docker container with cron scheduling
+- Spiders run automatically at configured intervals
+- Logging of scraping jobs and errors
+
+## Setup & Installation
 
 1. Clone the repository:
    ```bash
-   git clone repo_url
-    cd scrapy-news-crawler
-    ```
-2. Create a virtual environment:
+   git clone <repository-url>
+   cd news-scraper
+   ```
+
+2. Create Python virtual environment:
    ```bash
    python3 -m venv venv
    source venv/bin/activate
-   ``` 
+   ```
 
-3. Install the required packages:
+3. Install dependencies:
    ```bash
-    pip install -r requirements.txt
-    ```
+   pip install -r requirements.txt
+   ```
 
-4. Run the spider:
+4. Configure MongoDB connection in `pipelines.py`
+
+5. Run individual spiders:
    ```bash
    scrapy crawl <spider_name>
-   ``` 
-   Replace `<spider_name>` with the name of the spider you want to run (e.g., `bbc`, `cnn`, `aljazeera`, etc.).
+   ```
+   Available spiders: cnn, elpais, lemonde, spiegel
 
+6. Or run all spiders via the automation script:
+   ```bash
+   python run_spiders.py
+   ```
+
+The system will collect articles into MongoDB and make them available through the REST API endpoints.
