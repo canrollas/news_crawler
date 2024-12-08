@@ -1,0 +1,9 @@
+/venv2
+/venv
+/.idea
+/.vscode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+newscrawler/structured_data.json
